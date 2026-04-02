@@ -740,6 +740,15 @@ spawn();
 document.getElementById('menuRecord').innerText = `MEU RECORDE: ☆ ${score}`;
 
 animate();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+  }
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = 'manifest.json';
+  document.head.appendChild(link);
+  
 </script>
 </body>
 </html>
