@@ -167,7 +167,13 @@
 
     <p id="menuRecord" style="color: #ffd700; margin-bottom: 20px; font-size: 14px; letter-spacing: 1px;">MEU RECORDE: ☆ 0</p>
 
-    <button class="start-btn" onclick="startGame()">INICIAR JOGO</button>
+<p style="color: #aaa; font-size: 12px; margin-bottom: 5px;">ESCOLHA A ARENA:</p>
+<div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;">
+    <button id="btnCircle" class="theme-btn" style="border-color: #ffd700;" onclick="setArena('circle')">CÍRCULO</button>
+    <button id="btnSquare" class="theme-btn" onclick="setArena('square')">QUADRADO</button>
+</div>
+
+<button class="start-btn" onclick="startGame()">INICIAR JOGO</button>
 
     <div class="button-grid">
         <button class="info-btn" onclick="toggleGuide(true)">COMO JOGAR?</button>
@@ -233,6 +239,15 @@
 <canvas id="gameCanvas"></canvas>
 
 <script>
+  let arenaType = 'circle';
+
+function setArena(type) {
+    arenaType = type;
+
+    document.getElementById('btnCircle').style.borderColor = type === 'circle' ? '#ffd700' : '#555';
+    document.getElementById('btnSquare').style.borderColor = type === 'square' ? '#ffd700' : '#555';
+}
+
 let gameBackgroundColor = "rgba(10, 10, 12, 0.2)"; 
 const canvas = document.getElementById('gameCanvas');
 const body = document.body;
@@ -391,25 +406,41 @@ class Sphere {
         this.mass = this.radius;
         this.lifetime = (val === 2048) ? 180 : null;
     }
+
     update() {
         if (this.isStatic) return;
-        this.x += this.vx; this.y += this.vy;
-        this.vx *= 0.995; this.vy *= 0.995;
-        const cx = canvas.width / 2; const cy = canvas.height / 2;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vx *= 0.995;
+        this.vy *= 0.995;
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
         const arenaR = Math.min(canvas.width, canvas.height) * 2.0 * zoom;
-        const dx = this.x - cx; const dy = this.y - cy;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist + this.radius * zoom > arenaR) {
-            const nx = dx / dist; const ny = dy / dist;
-            const dot = this.vx * nx + this.vy * ny;
-            this.vx -= 2 * dot * nx; this.vy -= 2 * dot * ny;
-            const overlap = dist + this.radius * zoom - arenaR;
-            this.x -= nx * overlap; this.y -= ny * overlap;
-        }
-    }
+
+        if (arenaType === 'circle') {
+            const dx = this.x - cx;
+            const dy = this.y - cy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist + this.radius * zoom > arenaR) {
+                const nx = dx / dist; const ny = dy / dist;
+                const dot = this.vx * nx + this.vy * ny;
+                this.vx -= 2 * dot * nx; this.vy -= 2 * dot * ny;
+                const overlap = dist + this.radius * zoom - arenaR;
+                this.x -= nx * overlap; this.y -= ny * overlap;
+            }
+        } 
+        else if (arenaType === 'square') {
+            const s = arenaR;
+            if (this.x - this.radius * zoom < cx - s) { this.vx *= -1; this.x = cx - s + this.radius * zoom; }
+            if (this.x + this.radius * zoom > cx + s) { this.vx *= -1; this.x = cx + s - this.radius * zoom; }
+            if (this.y - this.radius * zoom < cy - s) { this.vy *= -1; this.y = cy - s + this.radius * zoom; }
+            if (this.y + this.radius * zoom > cy + s) { this.vy *= -1; this.y = cy + s - this.radius * zoom; }
+        } 
+    } 
+
     draw() {
         ctx.save();
-
         let bg = (currentTheme && typeof this.val === 'number') ? currentTheme[Math.log2(this.val) % currentTheme.length] : colors[this.val].bg;
         let txtCol = colors[this.val].txt;
 
@@ -634,11 +665,18 @@ function animate() {
 
     applyMagneticRepulsion();
 
-    ctx.beginPath(); 
-    ctx.arc(cx, cy, arenaR, 0, Math.PI * 2); 
-
     ctx.strokeStyle = (body.classList.contains('theme-body-t4') || body.classList.contains('theme-body-candy')) ? "#ccc" : "#333"; 
-    ctx.lineWidth = 5; 
+    ctx.lineWidth = 10; 
+    ctx.lineJoin = "round"; 
+    
+    ctx.beginPath(); 
+
+    if (arenaType === 'circle') {
+        ctx.arc(cx, cy, arenaR, 0, Math.PI * 2);
+    } else if (arenaType === 'square') {
+        const s = arenaR;
+        ctx.roundRect(cx - s, cy - s, s * 2, s * 2, 20 * zoom);
+    }
     ctx.stroke();
 
     if (isAiming && nextSphere) { 
