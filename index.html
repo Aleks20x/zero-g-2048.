@@ -155,7 +155,7 @@
     </style>
 </head>
 <body>
-  
+
 <div id="startScreen">
     <div class="stars-bg"></div> 
 <div class="content-wrapper">
@@ -164,18 +164,18 @@
         <span class="ultra-text">2048</span>
     </h1>
     <p class="subtitle">EDIÇÃO ULTRA</p>
-    
+
     <p id="menuRecord" style="color: #ffd700; margin-bottom: 20px; font-size: 14px; letter-spacing: 1px;">MEU RECORDE: ☆ 0</p>
-    
+
     <button class="start-btn" onclick="startGame()">INICIAR JOGO</button>
-    
+
     <div class="button-grid">
         <button class="info-btn" onclick="toggleGuide(true)">COMO JOGAR?</button>
         <button class="info-btn" style="border-color: #ff4444; color: #ff4444;" onclick="exitGame()">SAIR</button>
         <button class="info-btn support-full" style="border-color: #00ffcc; color: #00ffcc;" onclick="toggleSupport(true)">APOIAR O DESENVOLVEDOR</button>
         <button class="info-btn" style="border-color: #ffd700; color: #ffd700;" onclick="window.open('https://aleks20x.github.io/', '_blank')">MEUS OUTROS PROJETOS 🚀</button>
     </div>
-    
+
     <p class="credits-text">ALEKS20X • DESENVOLVEDOR INDIE</p>
 </div>
 </div>
@@ -183,9 +183,9 @@
 <div id="supportModal">
     <h2>Apoie o Projeto! 🚀</h2>
     <p>Gostou do jogo? Sua ajuda é fundamental para que eu continue estudando programação e criando novos projetos. Qualquer valor é muito bem-vindo!</p>
-    
+
     <div class="pix-box" id="pixKey">2bf45462-3260-43c2-8f83-ea9354f641af</div>
-    
+
     <button class="copy-btn" onclick="copyPix()">COPIAR CHAVE PIX</button>
     <br>
     <button class="close-support" onclick="toggleSupport(false)">VOLTAR</button>
@@ -194,7 +194,7 @@
 <div id="infoGuide">
     <h2>Como Jogar</h2>
     <p>Combine esferas de números iguais para somá-las e alcançar níveis maiores em gravidade zero!</p>
-    
+
     <div class="guide-item">
         <div class="guide-icon" style="background: linear-gradient(45deg, #ff00ff, #00ffff); color: white;">X</div>
         <div><strong>Esfera X (Coringa):</strong> Ela se funde com QUALQUER número, dobrando o valor dele.</div>
@@ -206,7 +206,7 @@
     </div>
 
     <p style="font-style: italic; font-size: 12px;">Dica: Use o mouse ou toque para mirar e solte para lançar as esferas na arena.</p>
-    
+
     <button class="close-guide" onclick="toggleGuide(false)">ENTENDI!</button>
 </div>
 
@@ -254,6 +254,7 @@ window.addEventListener("gamepadconnected", (e) => {
 window.addEventListener("gamepaddisconnected", () => { gamepad = null; });
 
 const colors = {
+    1:    { bg: '#000000', txt: '#fff', r: 90 },
     2:    { bg: '#FFFFFF', txt: '#000', r: 100 }, 
     4:    { bg: '#FF0000', txt: '#fff', r: 110 }, 
     8:    { bg: '#00FF00', txt: '#000', r: 120 }, 
@@ -265,8 +266,8 @@ const colors = {
     512:  { bg: '#8000FF', txt: '#fff', r: 180 }, 
     1024: { bg: '#00FF80', txt: '#000', r: 190 }, 
     2048: { bg: '#000000', txt: '#0FF', r: 200 },
-    'X':  { bg: '#fff', txt: '#fff', r: 100 },
-    '🧲':  { bg: '#fff', txt: '#fff', r: 100 }
+    'X':  { bg: '#fff', txt: '#fff', r: 80 },
+    '🧲':  { bg: '#fff', txt: '#fff', r: 80 }
 };
 
 function resize() {
@@ -279,12 +280,12 @@ resize();
 function startGame() {
     const startScreen = document.getElementById('startScreen');
     startScreen.classList.add('startScreen-hidden');
-    
+
     spheres = [];
     particles = [];
-    
+
     document.getElementById('score').innerText = `☆ Nível: ${score}`;
-    
+
     if (!nextSphere) spawn();
 
     if (!audioCtx) {
@@ -411,7 +412,7 @@ class Sphere {
 
         let bg = (currentTheme && typeof this.val === 'number') ? currentTheme[Math.log2(this.val) % currentTheme.length] : colors[this.val].bg;
         let txtCol = colors[this.val].txt;
-        
+
         if (this.val === 'X' || this.val === '🧲') {
             const hue = (Date.now() / 10) % 360;
             bg = `hsl(${hue}, 100%, 50%)`; ctx.shadowBlur = 20; ctx.shadowColor = bg;
@@ -419,7 +420,7 @@ class Sphere {
             ctx.shadowBlur = 5; 
             ctx.shadowColor = (body.classList.contains('theme-body-t4')) ? "rgba(0,0,0,0.1)" : "#ffffff"; 
         }
-        
+
         ctx.beginPath(); 
         ctx.arc(this.x, this.y, this.radius * zoom, 0, Math.PI * 2);
         ctx.fillStyle = bg; 
@@ -428,7 +429,7 @@ class Sphere {
         ctx.lineWidth = 2; 
         ctx.stroke();
         ctx.restore();
-        
+
         ctx.fillStyle = (body.classList.contains('theme-body-t4')) ? "#004d40" : txtCol; 
         ctx.font = `bold ${this.radius * 1.0 * zoom}px Arial`;
         ctx.textAlign = "center"; 
@@ -446,6 +447,7 @@ function spawn() {
     let val;
     if (r < 0.03) val = '🧲';
     else if (r < 0.08) val = 'X';
+    else if (r > 0.60) val = 1;
     else if (r > 0.45) val = 2;
     else if (r > 0.20) val = 4;
     else val = 8;
@@ -464,7 +466,7 @@ function launch() {
 function resolveCollision(s1, s2) {
     const dx = s2.x - s1.x; const dy = s2.y - s1.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
-    
+
     if (dist < (s1.radius + s2.radius) * zoom) {
 
         if (s1.val === '🧲' || s2.val === '🧲') {
@@ -477,20 +479,20 @@ function resolveCollision(s1, s2) {
                 spheres = spheres.filter(s => s !== powerSphere); return; 
             }
         }
-        
+
         if (s1.val === s2.val || s1.val === 'X' || s2.val === 'X') {
             let newVal;
             if (s1.val === 'X' && s2.val === 'X') newVal = 4;
             else if (s1.val === 'X') newVal = s2.val * 2;
             else if (s2.val === 'X') newVal = s1.val * 2;
             else newVal = s1.val * 2;
-            
+
             playMergeSound();
             const mergeX = (s1.x + s2.x) / 2; const mergeY = (s1.y + s2.y) / 2;
             const shockRadius = 500 * zoom; const shockStrength = 12 + (Math.log2(newVal) * 2);
             spheres.forEach(other => { if (other !== s1 && other !== s2) { const pdx = other.x - mergeX; const pdy = other.y - mergeY; const pDist = Math.sqrt(pdx * pdx + pdy * pdy); if (pDist < shockRadius) { const angle = Math.atan2(pdy, pdx); const forceMult = (1 - pDist / shockRadius) * shockStrength; other.vx += Math.cos(angle) * forceMult; other.vy += Math.sin(angle) * forceMult; } } });
             createMergeParticles(mergeX, mergeY, 25); 
-            
+
             if (newVal >= 2048) {
                 const finalSphere = new Sphere(mergeX, mergeY, 2048);
                 finalSphere.vx = (s1.vx + s2.vx) * 0.5; finalSphere.vy = (s1.vy + s2.vy) * 0.5;
@@ -507,7 +509,7 @@ function resolveCollision(s1, s2) {
 
         const nx = dx / dist; const ny = dy / dist;
         const p = 2 * (s1.vx * nx + s1.vy * ny - s2.vx * nx - s2.vy * ny) / (s1.mass + s2.mass);
-        
+
         let impactForce = Math.abs(p);
         if (impactForce > 0.15) {
             playCollisionSound(Math.min(0.5, impactForce * 0.2)); 
@@ -576,7 +578,7 @@ function updateGamepad() {
 
     if (Math.abs(stickX) > 0.15 || Math.abs(stickY) > 0.15) {
         isAiming = true;
-        
+
         const alcanceMaximo = 400 * sensibilidade;
         mouse.x = (canvas.width / 2) + (stickX * alcanceMaximo);
         mouse.y = (canvas.height / 2) + (stickY * alcanceMaximo);
@@ -615,7 +617,7 @@ function backToMenu() {
 
     const startScreen = document.getElementById('startScreen');
     startScreen.classList.remove('startScreen-hidden');
-    
+
     spheres = [];
     particles = [];
     spawn();
@@ -625,13 +627,13 @@ function animate() {
     updateGamepad();
     ctx.fillStyle = gameBackgroundColor; 
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
+
     const cx = canvas.width / 2; 
     const cy = canvas.height / 2;
     const arenaR = Math.min(canvas.width, canvas.height) * 2.0 * zoom;
-    
+
     applyMagneticRepulsion();
-    
+
     ctx.beginPath(); 
     ctx.arc(cx, cy, arenaR, 0, Math.PI * 2); 
 
@@ -650,13 +652,13 @@ function animate() {
     }
 
     if (nextSphere) nextSphere.draw();
-    
+
     for (let i = particles.length - 1; i >= 0; i--) { 
         particles[i].update(); 
         particles[i].draw(); 
         if (particles[i].alpha <= 0) particles.splice(i, 1); 
     }
-    
+
     for (let i = spheres.length - 1; i >= 0; i--) {
         const s = spheres[i]; 
         s.update();
@@ -693,7 +695,7 @@ function copyPix() {
         const btn = document.querySelector('.copy-btn');
         btn.innerText = "COPIADO!";
         btn.style.background = "#00ffcc";
-        
+
         setTimeout(() => {
             btn.innerText = "COPIAR CHAVE PIX";
             btn.style.background = "#ffd700";
@@ -709,7 +711,7 @@ function setTheme(theme) {
 
     cv.classList.remove('filter-invert', 'filter-heat', 'filter-cold', 'filter-candy'); 
     body.classList.remove('theme-body-candy', 'theme-body-t4');
-    
+
     gameBackgroundColor = "rgba(10, 10, 12, 0.2)"; 
     cv.style.background = "black"; 
     scoreDisp.style.color = "white"; 
@@ -749,7 +751,7 @@ if ('serviceWorker' in navigator) {
   link.rel = 'manifest';
   link.href = 'manifest.json';
   document.head.appendChild(link);
-  
+
 </script>
 </body>
 </html>
