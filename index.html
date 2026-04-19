@@ -666,17 +666,22 @@ function animate() {
     applyMagneticRepulsion();
 
     ctx.strokeStyle = (body.classList.contains('theme-body-t4') || body.classList.contains('theme-body-candy')) ? "#ccc" : "#333"; 
-    ctx.lineWidth = 10; 
+    ctx.lineWidth = 14; 
     ctx.lineJoin = "round"; 
     
-    ctx.beginPath(); 
+    ctx.beginPath();
 
     if (arenaType === 'circle') {
         ctx.arc(cx, cy, arenaR, 0, Math.PI * 2);
     } else if (arenaType === 'square') {
-        const s = arenaR;
-        ctx.roundRect(cx - s, cy - s, s * 2, s * 2, 20 * zoom);
+
+        const drawS = arenaR * 1.05; 
+
+        const ultraRoundRectRadius = 150 * zoom;
+
+        ctx.roundRect(cx - drawS, cy - drawS, drawS * 2, drawS * 2, ultraRoundRectRadius);
     }
+    
     ctx.stroke();
 
     if (isAiming && nextSphere) { 
