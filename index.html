@@ -199,13 +199,17 @@
     <button class="theme-btn" onclick="setTheme('candy')">T 5</button>
 </div>
 
-<canvas id="gameCanvas"></canvas>
-
+<div id="canvasContainer" style="position: relative; width: 100vw; height: 100vh;">
+    <canvas id="bgCanvas" style="position: absolute; top: 0; left: 0; z-index: 1;"></canvas>
+    
+    <canvas id="gameCanvas" style="position: absolute; top: 0; left: 0; z-index: 2;"></canvas>
+</div>
 <script>
   let arenaType = 'circle';
 
 function setArena(type) {
     arenaType = type;
+    drawStaticArena();
 
     document.getElementById('btnCircle').style.borderColor = type === 'circle' ? '#ffd700' : '#555';
     document.getElementById('btnSquare').style.borderColor = type === 'square' ? '#ffd700' : '#555';
@@ -215,6 +219,8 @@ let gameBackgroundColor = "rgba(10, 10, 12, 0.2)";
 const canvas = document.getElementById('gameCanvas');
 const body = document.body;
 const ctx = canvas.getContext('2d');
+const bgCanvas = document.getElementById('bgCanvas');
+const bgCtx = bgCanvas.getContext('2d');
 let currentTheme = null;
 let score = parseInt(localStorage.getItem('zeroG_score')) || 0;
 let zoom = 0.25;
@@ -248,9 +254,43 @@ const colors = {
     '🧲':  { bg: '#fff', txt: '#fff', r: 80 }
 };
 
+
+function drawStaticArena() {
+    // Ajusta o tamanho
+    bgCanvas.width = window.innerWidth;
+    bgCanvas.height = window.innerHeight;
+
+    // Desenha a Arena APENAS AQUI
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    
+    const cx = bgCanvas.width / 2;
+    const cy = bgCanvas.height / 2;
+    const arenaR = Math.min(bgCanvas.width, bgCanvas.height) * 2.0 * zoom;
+
+    bgCtx.strokeStyle = body.classList.contains('theme-body-t4') ? "#ccc" : "#333";
+    bgCtx.lineWidth = 14;
+    bgCtx.lineJoin = "round";
+    
+    bgCtx.beginPath();
+    if (arenaType === 'circle') {
+        bgCtx.arc(cx, cy, arenaR, 0, Math.PI * 2);
+    } else {
+        const drawS = arenaR * 1.05;
+        bgCtx.roundRect(cx - drawS, cy - drawS, drawS * 2, drawS * 2, 150 * zoom);
+    }
+    bgCtx.stroke();
+}
+
 function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    
+    // Atualiza o canvas de fundo também
+    bgCanvas.width = window.innerWidth;
+    bgCanvas.height = window.innerHeight;
+    
+    // Como o tamanho mudou, precisamos redesenhar a arena estática
+    if (typeof drawStaticArena === "function") drawStaticArena();
 }
 window.addEventListener('resize', resize);
 resize();
@@ -551,7 +591,10 @@ function autoLaunch() {
     if (target) { mouse.x = target.x; mouse.y = target.y; launch(); }
 }
 
-function changeZoom(v) { zoom *= v; }
+function changeZoom(v) { 
+    zoom *= v; 
+    drawStaticArena(); // Adicione isso aqui!
+}
 const getPos = (e) => { const t = e.touches ? e.touches[0] : e; mouse.x = t.clientX; mouse.y = t.clientY; };
 window.addEventListener('mousedown', (e) => { isAiming = true; getPos(e); });
 window.addEventListener('mousemove', getPos);
@@ -621,6 +664,7 @@ function backToMenu() {
 
 function animate() {
     updateGamepad();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = gameBackgroundColor; 
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -630,24 +674,6 @@ function animate() {
 
     applyMagneticRepulsion();
 
-    ctx.strokeStyle = (body.classList.contains('theme-body-t4') || body.classList.contains('theme-body-candy')) ? "#ccc" : "#333"; 
-    ctx.lineWidth = 14; 
-    ctx.lineJoin = "round"; 
-    
-    ctx.beginPath();
-
-    if (arenaType === 'circle') {
-        ctx.arc(cx, cy, arenaR, 0, Math.PI * 2);
-    } else if (arenaType === 'square') {
-
-        const drawS = arenaR * 1.05; 
-
-        const ultraRoundRectRadius = 150 * zoom;
-
-        ctx.roundRect(cx - drawS, cy - drawS, drawS * 2, drawS * 2, ultraRoundRectRadius);
-    }
-    
-    ctx.stroke();
 
     if (isAiming && nextSphere) { 
         ctx.beginPath(); 
@@ -730,6 +756,7 @@ function setTheme(theme) {
         scoreDisp.style.color = "#5d4037";
         gameBackgroundColor = "rgba(255, 235, 205, 0.4)"; 
     }
+    drawStaticArena();
 }
 
 document.getElementById('score').innerText = `☆ Nível: ${score}`;
