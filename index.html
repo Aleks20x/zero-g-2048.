@@ -30,9 +30,9 @@
         #themes { position: absolute; bottom: 20px; left: 20px; display: flex; gap: 8px; z-index: 10; flex-wrap: wrap; }
         #startScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #1a1a1f 0%, #0a0a0c 100%); display: flex; justify-content: center; align-items: center; z-index: 1000; font-family: 'Arial Black', sans-serif; transition: opacity 0.5s ease-out; overflow: hidden; }
         .content-wrapper { text-align: center; color: white; }
-        .main-title { margin: 0; font-size: 5vw; text-transform: uppercase; display: flex; flex-direction: column; letter-spacing: -2px; line-height: 0.9; }
+        .main-title { margin: 0; font-size: 10vw; text-transform: uppercase; display: flex; flex-direction: column; letter-spacing: -2px; line-height: 0.9; }
         .main-title span:first-child { color: white; text-shadow: 0 0 10px rgba(255,255,255,0.8); }
-        .ultra-text { font-size: 10vw; color: #ffd700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.7); margin-bottom: 10px; }
+        .ultra-text { font-size: 15vw; color: #ffd700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.7); margin-bottom: 10px; }
         .subtitle { font-size: 2vw; color: #aaa; margin: -10px 0 30px 0; letter-spacing: 2px; }
         .start-btn { display: inline-flex; justify-content: center; align-items: center; min-width: 220px; padding: 18px 30px; border-radius: 50px; border: 1px solid rgba(255, 215, 0, 0.5); background: linear-gradient(to bottom, #ffd700 0%, #d4ac0d 100%); color: #0a0a0c; font-size: 18px; font-weight: 900; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); transition: all 0.2s ease-out; white-space: nowrap; line-height: 1; }
         .start-btn:hover { box-shadow: 0 0 50px rgba(255, 215, 0, 0.6); transform: translateY(-3px); }
@@ -104,31 +104,7 @@
 
 #supportModal h2 { color: #ffd700; margin-top: 0; }
 #supportModal p { font-size: 14px; color: #ccc; line-height: 1.6; }
-
-.pix-box {
-    background: #222;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px dashed #ffd700;
-    margin: 20px 0;
-    word-break: break-all;
-    font-family: monospace;
-    color: #00ffcc;
-    font-size: 14px;
-}
-
-.copy-btn {
-    background: #ffd700;
-    color: #000;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.copy-btn:active { transform: scale(0.95); }
+        
 
 .close-support {
     margin-top: 15px;
@@ -177,24 +153,12 @@
 
     <div class="button-grid">
         <button class="info-btn support-full" onclick="toggleGuide(true)">COMO JOGAR?</button>
-        <button class="info-btn support-full" style="border-color: #00ffcc; color: #00ffcc;" onclick="toggleSupport(true)">APOIAR O DESENVOLVEDOR</button>
-        <button class="info-btn support-full" style="border-color: #ffd700; color: #ffd700;" onclick="window.open('https://aleks20x.github.io/', '_blank')">MEUS OUTROS PROJETOS 🚀</button>
-    </div>
+        </div>
 
     <p class="credits-text">ALEKS20X • DESENVOLVEDOR INDIE</p>
 </div>
 </div>
 
-<div id="supportModal">
-    <h2>Apoie o Projeto! 🚀</h2>
-    <p>Gostou do jogo? Sua ajuda é fundamental para que eu continue estudando programação e criando novos projetos. Qualquer valor é muito bem-vindo!</p>
-
-    <div class="pix-box" id="pixKey">2bf45462-3260-43c2-8f83-ea9354f641af</div>
-
-    <button class="copy-btn" onclick="copyPix()">COPIAR CHAVE PIX</button>
-    <br>
-    <button class="close-support" onclick="toggleSupport(false)">VOLTAR</button>
-</div>
 
 <div id="infoGuide">
     <h2>Como Jogar</h2>
@@ -644,9 +608,11 @@ startGame = function() {
 }
 
 function backToMenu() {
-
     const startScreen = document.getElementById('startScreen');
     startScreen.classList.remove('startScreen-hidden');
+    
+    // Atualiza o recorde visual no menu antes de mostrar
+    document.getElementById('menuRecord').innerText = `MEU RECORDE: ☆ ${score}`;
 
     spheres = [];
     particles = [];
@@ -731,29 +697,16 @@ function toggleSupport(show) {
     modal.style.display = show ? 'block' : 'none';
 }
 
-function copyPix() {
-    const pixText = document.getElementById('pixKey').innerText;
-    navigator.clipboard.writeText(pixText).then(() => {
-        const btn = document.querySelector('.copy-btn');
-        btn.innerText = "COPIADO!";
-        btn.style.background = "#00ffcc";
-
-        setTimeout(() => {
-            btn.innerText = "COPIAR CHAVE PIX";
-            btn.style.background = "#ffd700";
-        }, 2000);
-    }).catch(err => {
-        alert("Erro ao copiar. Por favor, copie manualmente: " + pixText);
-    });
-}
 
 function setTheme(theme) {
     const cv = document.getElementById('gameCanvas'); 
     const scoreDisp = document.getElementById('score');
+    const uiElements = document.querySelectorAll('.elem');
 
     cv.classList.remove('filter-invert', 'filter-heat', 'filter-cold', 'filter-candy'); 
     body.classList.remove('theme-body-candy', 'theme-body-t4');
 
+    // Reset padrão
     gameBackgroundColor = "rgba(10, 10, 12, 0.2)"; 
     cv.style.background = "black"; 
     scoreDisp.style.color = "white"; 
@@ -766,7 +719,7 @@ function setTheme(theme) {
         body.classList.add('theme-body-t4');
         cv.style.background = '#e0f7fa'; 
         scoreDisp.style.color = '#006064';
-        gameBackgroundColor = "rgba(224, 247, 250, 0.2)"; 
+        gameBackgroundColor = "rgba(224, 247, 250, 0.4)"; // Um pouco mais opaco para limpar melhor o rastro
         currentTheme = ['#00d4ff', '#00ffcc', '#0099ff', '#3366ff', '#66ffff']; 
     }
 
@@ -775,7 +728,7 @@ function setTheme(theme) {
         body.classList.add('theme-body-candy'); 
         cv.style.background = "blanchedalmond";
         scoreDisp.style.color = "#5d4037";
-        gameBackgroundColor = "rgba(255, 235, 205, 0.2)"; 
+        gameBackgroundColor = "rgba(255, 235, 205, 0.4)"; 
     }
 }
 
