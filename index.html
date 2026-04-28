@@ -1,226 +1,241 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zero-G 2048 - Ultra Edition -Aleks20x</title>
-    <style>
-        body { margin: 0; overflow: hidden; background: #0a0a0c; font-family: sans-serif; touch-action: none; }
-        canvas { display: block; }
-        #ui {
-            position: absolute; top: 20px; width: 100%;
-            display: flex; justify-content: space-around; pointer-events: none; z-index: 10;
-        }
-        .elem {
-            pointer-events: auto; background: rgba(30, 30, 35, 0.9);
-            padding: 8px 15px; border-radius: 10px; color: white;
-            border: 1px solid #444; font-weight: bold; font-size: 14px;
-        }
-        button { cursor: pointer; border: none; }
-        #controls { position: absolute; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
-        #controls button { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #444; background: #222; color: white; font-size: 20px; display: flex; justify-content: center; align-items: center; }
-        .theme-btn { padding: 8px 12px; border-radius: 8px; border: 1px solid #555; background: #222; color: white; font-size: 12px; }
-        .filter-invert { filter: invert(1) hue-rotate(180deg); }
-        .filter-heat { filter: saturate(5) hue-rotate(-50deg) brightness(1.2) contrast(1.2); }
-        .filter-cold { filter: hue-rotate(160deg) saturate(1.2) brightness(0.9); }
-        .filter-candy { filter: saturate(0.8) sepia(0.2) hue-rotate(-15deg); }
-        body.theme-body-candy { background-color: #ffebcd !important; }
-        body.theme-body-t4 { background-color: #e0f7fa !important; }
-        body.theme-body-candy { background-color: #ffebcd !important; }
-        #themes { position: absolute; bottom: 20px; left: 20px; display: flex; gap: 8px; z-index: 10; flex-wrap: wrap; }
-        #startScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #1a1a1f 0%, #0a0a0c 100%); display: flex; justify-content: center; align-items: center; z-index: 1000; font-family: 'Arial Black', sans-serif; transition: opacity 0.5s ease-out; overflow: hidden; }
-        .content-wrapper { text-align: center; color: white; }
-        .main-title { margin: 0; font-size: 10vw; text-transform: uppercase; display: flex; flex-direction: column; letter-spacing: -2px; line-height: 0.9; }
-        .main-title span:first-child { color: white; text-shadow: 0 0 10px rgba(255,255,255,0.8); }
-        .ultra-text { font-size: 15vw; color: #ffd700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.7); margin-bottom: 10px; }
-        .subtitle { font-size: 2vw; color: #aaa; margin: -10px 0 30px 0; letter-spacing: 2px; }
-        .start-btn { display: inline-flex; justify-content: center; align-items: center; min-width: 220px; padding: 18px 30px; border-radius: 50px; border: 1px solid rgba(255, 215, 0, 0.5); background: linear-gradient(to bottom, #ffd700 0%, #d4ac0d 100%); color: #0a0a0c; font-size: 18px; font-weight: 900; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); transition: all 0.2s ease-out; white-space: nowrap; line-height: 1; }
-        .start-btn:hover { box-shadow: 0 0 50px rgba(255, 215, 0, 0.6); transform: translateY(-3px); }
-        .credits-text { font-size: 2vw; color: #444; margin-top: 50px; letter-spacing: 1px; }
-        .stars-bg { position: absolute; width: 100%; height: 100%; background: transparent; z-index: -1; }
-        .stars-bg:after { content: ""; position: absolute; top: -10px; left: -10px; width: 2px; height: 2px; background: white; border-radius: 50%; box-shadow: 10vw 20vh 1px 0 #fff, 30vw 50vh 2px 0 #ffd700, 50vw 80vh 1px 0 #fff, 70vw 30vh 2px 0 #ffd700, 90vw 70vh 1px 0 #fff, 15vw 90vh 2px 0 #ffd700, 40vw 40vh 1px 0 #fff, 65vw 60vh 2px 0 #ffd700, 85vw 10vh 1px 0 #fff, 5vw 65vh 2px 0 #ffd700; animation: twinkle 5s infinite; }
-        @keyframes twinkle { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.2; } }
-        .startScreen-hidden { opacity: 0; pointer-events: none; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zero-G 2048 - Ultra Edition -Aleks20x</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #0a0a0c; font-family: sans-serif; touch-action: none; }
+        canvas { display: block; }
+        #ui {
+            position: absolute; top: 20px; width: 100%;
+            display: flex; justify-content: space-around; pointer-events: none; z-index: 10;
+        }
+        .elem {
+            pointer-events: auto; background: rgba(30, 30, 35, 0.9);
+            padding: 8px 15px; border-radius: 10px; color: white;
+            border: 1px solid #444; font-weight: bold; font-size: 14px;
+        }
+        button { cursor: pointer; border: none; }
+        #controls { position: absolute; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
+        #controls button { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #444; background: #222; color: white; font-size: 20px; display: flex; justify-content: center; align-items: center; }
+        .theme-btn { padding: 8px 12px; border-radius: 8px; border: 1px solid #555; background: #222; color: white; font-size: 12px; }
+        .filter-invert { filter: invert(1) hue-rotate(180deg); }
+        .filter-heat { filter: saturate(5) hue-rotate(-50deg) brightness(1.2) contrast(1.2); }
+        .filter-cold { filter: hue-rotate(160deg) saturate(1.2) brightness(0.9); }
+        .filter-candy { filter: saturate(0.8) sepia(0.2) hue-rotate(-15deg); }
+        body.theme-body-candy { background-color: #ffebcd !important; }
+        body.theme-body-t4 { background-color: #e0f7fa !important; }
+        body.theme-body-candy { background-color: #ffebcd !important; }
+        #themes { position: absolute; bottom: 20px; left: 20px; display: flex; gap: 8px; z-index: 10; flex-wrap: wrap; }
+        #startScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #1a1a1f 0%, #0a0a0c 100%); display: flex; justify-content: center; align-items: center; z-index: 1000; font-family: 'Arial Black', sans-serif; transition: opacity 0.5s ease-out; overflow: hidden; }
+        .content-wrapper { text-align: center; color: white; }
+        .main-title { margin: 0; font-size: 10vw; text-transform: uppercase; display: flex; flex-direction: column; letter-spacing: -2px; line-height: 0.9; }
+        .main-title span:first-child { color: white; text-shadow: 0 0 10px rgba(255,255,255,0.8); }
+        .ultra-text { font-size: 20vw; color: #ffd700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.7); margin-bottom: 20px; }
+        .subtitle { font-size: 5vw; color: #aaa; margin: -10px 0 60px 0; letter-spacing: 2px; }
+        .start-btn { display: inline-flex; justify-content: center; align-items: center; min-width: 220px; padding: 18px 30px; border-radius: 50px; border: 1px solid rgba(255, 215, 0, 0.5); background: linear-gradient(to bottom, #ffd700 0%, #d4ac0d 100%); color: #0a0a0c; font-size: 18px; font-weight: 900; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); transition: all 0.2s ease-out; white-space: nowrap; line-height: 1; }
+        .start-btn:hover { box-shadow: 0 0 50px rgba(255, 215, 0, 0.6); transform: translateY(-3px); }
+        .credits-text { font-size: 3vw; color: #444; margin-top: 50px; letter-spacing: 1px; }
+        .stars-bg { position: absolute; width: 100%; height: 100%; background: transparent; z-index: -1; }
+        .stars-bg:after { content: ""; position: absolute; top: -10px; left: -10px; width: 2px; height: 2px; background: white; border-radius: 50%; box-shadow: 10vw 20vh 1px 0 #fff, 30vw 50vh 2px 0 #ffd700, 50vw 80vh 1px 0 #fff, 70vw 30vh 2px 0 #ffd700, 90vw 70vh 1px 0 #fff, 15vw 90vh 2px 0 #ffd700, 40vw 40vh 1px 0 #fff, 65vw 60vh 2px 0 #ffd700, 85vw 10vh 1px 0 #fff, 5vw 65vh 2px 0 #ffd700; animation: twinkle 5s infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.2; } }
+        .startScreen-hidden { opacity: 0; pointer-events: none; }
 .info-btn {
-    margin-top: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid #444;
-    color: #aaa;
-    padding: 10px 15px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: 0.3s;
-    min-width: 120px;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #444;
+    color: #aaa;
+    padding: 10px 15px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.3s;
+    min-width: 120px;
 }
 .info-btn:hover { background: rgba(255, 255, 255, 0.2); color: white; }
 
 #infoGuide {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 85%; max-width: 400px;
-    background: #1e1e23;
-    border: 2px solid #ffd700;
-    border-radius: 20px;
-    padding: 25px;
-    color: white;
-    z-index: 2000;
-    display: none;
-    box-shadow: 0 0 50px rgba(0,0,0,0.8);
-    text-align: left;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%; max-width: 400px;
+    background: #1e1e23;
+    border: 2px solid #ffd700;
+    border-radius: 20px;
+    padding: 25px;
+    color: white;
+    z-index: 2000;
+    display: none;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    text-align: left;
 }
 
 #infoGuide h2 { color: #ffd700; margin-top: 0; text-align: center; }
 #infoGuide p { font-size: 14px; line-height: 1.5; color: #ccc; }
 .guide-item { margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
-.guide-icon { 
-    min-width: 40px; height: 40px; border-radius: 50%; 
-    display: flex; justify-content: center; align-items: center; 
-    font-weight: bold; border: 1px solid white; background: #333;
+.guide-icon { 
+    min-width: 40px; height: 40px; border-radius: 50%; 
+    display: flex; justify-content: center; align-items: center; 
+    font-weight: bold; border: 1px solid white; background: #333;
 }
 
 .close-guide {
-    display: block; width: 100%; padding: 12px; margin-top: 20px;
-    background: #ffd700; color: #000; border: none;
-    border-radius: 10px; font-weight: bold; cursor: pointer;
+    display: block; width: 100%; padding: 12px; margin-top: 20px;
+    background: #ffd700; color: #000; border: none;
+    border-radius: 10px; font-weight: bold; cursor: pointer;
 }
 
 #supportModal {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 85%; max-width: 400px;
-    background: #15151a;
-    border: 2px solid #ffd700;
-    border-radius: 20px;
-    padding: 25px;
-    color: white;
-    z-index: 3000;
-    display: none;
-    box-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
-    text-align: center;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%; max-width: 400px;
+    background: #15151a;
+    border: 2px solid #ffd700;
+    border-radius: 20px;
+    padding: 25px;
+    color: white;
+    z-index: 3000;
+    display: none;
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
+    text-align: center;
 }
 
 #supportModal h2 { color: #ffd700; margin-top: 0; }
 #supportModal p { font-size: 14px; color: #ccc; line-height: 1.6; }
-        
+
+.pix-box {
+    background: #222;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px dashed #ffd700;
+    margin: 20px 0;
+    word-break: break-all;
+    font-family: monospace;
+    color: #00ffcc;
+    font-size: 14px;
+}
+
+.copy-btn {
+    background: #ffd700;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.copy-btn:active { transform: scale(0.95); }
 
 .close-support {
-    margin-top: 15px;
-    background: transparent;
-    color: #888;
-    border: none;
-    cursor: pointer;
-    text-decoration: underline;
-    font-size: 12px;
+    margin-top: 15px;
+    background: transparent;
+    color: #888;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 12px;
 }
 
 .button-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 20px;
-    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 0 20px;
 }
 .support-full {
-    grid-column: span 2;
-    margin-top: 5px !important;
+    grid-column: span 2;
+    margin-top: 5px !important;
 }
 
-    </style>
+    </style>
 </head>
 <body>
-
+  
 <div id="startScreen">
-    <div class="stars-bg"></div> 
+    <div class="stars-bg"></div> 
 <div class="content-wrapper">
-    <h1 class="main-title">
-        <span>ZERO-G</span>
-        <span class="ultra-text">2048</span>
-    </h1>
-    <p class="subtitle">EDIÇÃO ULTRA</p>
-
-    <p id="menuRecord" style="color: #ffd700; margin-bottom: 20px; font-size: 14px; letter-spacing: 1px;">MEU RECORDE: ☆ 0</p>
-
-<p style="color: #aaa; font-size: 12px; margin-bottom: 5px;">ESCOLHA A ARENA:</p>
-<div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;">
-    <button id="btnCircle" class="theme-btn" style="border-color: #ffd700;" onclick="setArena('circle')">CÍRCULO</button>
-    <button id="btnSquare" class="theme-btn" onclick="setArena('square')">QUADRADO</button>
-</div>
-
-<button class="start-btn" onclick="startGame()">INICIAR JOGO</button>
-
-    <div class="button-grid">
-        <button class="info-btn support-full" onclick="toggleGuide(true)">COMO JOGAR?</button>
-        </div>
-
-    <p class="credits-text">ALEKS20X • DESENVOLVEDOR INDIE</p>
+    <h1 class="main-title">
+        <span>ZERO-G</span>
+        <span class="ultra-text">2048</span>
+    </h1>
+    <p class="subtitle">EDIÇÃO ULTRA</p>
+    
+    <p id="menuRecord" style="color: #ffd700; margin-bottom: 20px; font-size: 14px; letter-spacing: 1px;">MEU RECORDE: ☆ 0</p>
+    
+    <button class="start-btn" onclick="startGame()">INICIAR JOGO</button>
+    
+    <div class="button-grid">
+        <button class="info-btn" onclick="toggleGuide(true)">COMO JOGAR?</button>
+        <button class="info-btn" style="border-color: #ff4444; color: #ff4444;" onclick="exitGame()">SAIR</button>
+        <button class="info-btn support-full" style="border-color: #00ffcc; color: #00ffcc;" onclick="toggleSupport(true)">APOIAR O DESENVOLVEDOR</button>
+    </div>
+    
+    <p class="credits-text">ALEKS20X • DESENVOLVEDOR INDIE</p>
 </div>
 </div>
 
+<div id="supportModal">
+    <h2>Apoie o Projeto! 🚀</h2>
+    <p>Gostou do jogo? Sua ajuda é fundamental para que eu continue estudando programação e criando novos projetos. Qualquer valor é muito bem-vindo!</p>
+    
+    <div class="pix-box" id="pixKey">2bf45462-3260-43c2-8f83-ea9354f641af</div>
+    
+    <button class="copy-btn" onclick="copyPix()">COPIAR CHAVE PIX</button>
+    <br>
+    <button class="close-support" onclick="toggleSupport(false)">VOLTAR</button>
+</div>
 
 <div id="infoGuide">
-    <h2>Como Jogar</h2>
-    <p>Combine esferas de números iguais para somá-las e alcançar níveis maiores em gravidade zero!</p>
+    <h2>Como Jogar</h2>
+    <p>Combine esferas de números iguais para somá-las e alcançar níveis maiores em gravidade zero!</p>
+    
+    <div class="guide-item">
+        <div class="guide-icon" style="background: linear-gradient(45deg, #ff00ff, #00ffff); color: white;">X</div>
+        <div><strong>Esfera X (Coringa):</strong> Ela se funde com QUALQUER número, dobrando o valor dele.</div>
+    </div>
 
-    <div class="guide-item">
-        <div class="guide-icon" style="background: linear-gradient(45deg, #ff00ff, #00ffff); color: white;">X</div>
-        <div><strong>Esfera X (Coringa):</strong> Ela se funde com QUALQUER número, dobrando o valor dele.</div>
-    </div>
+    <div class="guide-item">
+        <div class="guide-icon" style="background: #fff; color: #000;">🧲</div>
+        <div><strong>Esfera Ímã:</strong> Quando toca em um número, ela atrai todas as outras esferas de mesmo valor para o centro.</div>
+    </div>
 
-    <div class="guide-item">
-        <div class="guide-icon" style="background: #fff; color: #000;">🧲</div>
-        <div><strong>Esfera Ímã:</strong> Quando toca em um número, ela atrai todas as outras esferas de mesmo valor para o centro.</div>
-    </div>
-
-    <p style="font-style: italic; font-size: 12px;">Dica: Use o mouse ou toque para mirar e solte para lançar as esferas na arena.</p>
-
-    <button class="close-guide" onclick="toggleGuide(false)">ENTENDI!</button>
+    <p style="font-style: italic; font-size: 12px;">Dica: Use o mouse ou toque para mirar e solte para lançar as esferas na arena.</p>
+    
+    <button class="close-guide" onclick="toggleGuide(false)">ENTENDI!</button>
 </div>
 
 <div id="ui">
-    <div id="score" class="elem">☆ Nível: 0</div>
-    <div id="autoBtn" class="elem" style="cursor:pointer; color: #ff4444;" onclick="toggleAuto()">AUTO: OFF</div>
-    <div class="elem" style="cursor:pointer; color: #ffd700;" onclick="backToMenu()">MENU</div>
-    <div class="elem" style="cursor:pointer" onclick="resetGame()">RESET</div>
+    <div id="score" class="elem">☆ Nível: 0</div>
+    <div id="autoBtn" class="elem" style="cursor:pointer; color: #ff4444;" onclick="toggleAuto()">AUTO: OFF</div>
+    <div class="elem" style="cursor:pointer; color: #ffd700;" onclick="backToMenu()">MENU</div>
+    <div class="elem" style="cursor:pointer" onclick="resetGame()">RESET</div>
 </div>
 
 <div id="controls">
-    <button onclick="changeZoom(1.1)">+</button>
-    <button onclick="changeZoom(0.9)">-</button>
+    <button onclick="changeZoom(1.1)">+</button>
+    <button onclick="changeZoom(0.9)">-</button>
 </div>
 
 <div id="themes">
-    <button class="theme-btn" onclick="setTheme('normal')">T 1</button>
-    <button class="theme-btn" onclick="setTheme('invert')">T 2</button>
-    <button class="theme-btn" onclick="setTheme('heat')">T 3</button>
-    <button class="theme-btn" onclick="setTheme('T4')">T 4</button>
-    <button class="theme-btn" onclick="setTheme('candy')">T 5</button>
+    <button class="theme-btn" onclick="setTheme('normal')">T 1</button>
+    <button class="theme-btn" onclick="setTheme('invert')">T 2</button>
+    <button class="theme-btn" onclick="setTheme('heat')">T 3</button>
+    <button class="theme-btn" onclick="setTheme('T4')">T 4</button>
+    <button class="theme-btn" onclick="setTheme('candy')">T 5</button>
 </div>
 
-<div id="canvasContainer" style="position: relative; width: 100vw; height: 100vh;">
-    <canvas id="bgCanvas" style="position: absolute; top: 0; left: 0; z-index: 1;"></canvas>
-    
-    <canvas id="gameCanvas" style="position: absolute; top: 0; left: 0; z-index: 2;"></canvas>
-</div>
+<canvas id="gameCanvas"></canvas>
+
 <script>
-  let arenaType = 'circle';
-
-function setArena(type) {
-    arenaType = type;
-    drawStaticArena();
-
-    document.getElementById('btnCircle').style.borderColor = type === 'circle' ? '#ffd700' : '#555';
-    document.getElementById('btnSquare').style.borderColor = type === 'square' ? '#ffd700' : '#555';
-}
-
-let gameBackgroundColor = "rgba(10, 10, 12, 0.2)"; 
+let gameBackgroundColor = "rgba(10, 10, 12, 0.2)"; 
 const canvas = document.getElementById('gameCanvas');
 const body = document.body;
 const ctx = canvas.getContext('2d');
-const bgCanvas = document.getElementById('bgCanvas');
-const bgCtx = bgCanvas.getContext('2d');
 let currentTheme = null;
 let score = parseInt(localStorage.getItem('zeroG_score')) || 0;
 let zoom = 0.25;
@@ -229,372 +244,318 @@ let particles = [];
 let nextSphere = null;
 let isAiming = false;
 let mouse = { x: 0, y: 0 };
-let audioCtx = null; 
+let audioCtx = null; 
 let gamepad = null;
-window.addEventListener("gamepadconnected", (e) => { 
-    console.log("Controle conectado!"); 
-    gamepad = e.gamepad; 
+window.addEventListener("gamepadconnected", (e) => { 
+    console.log("Controle conectado!"); 
+    gamepad = e.gamepad; 
 });
 window.addEventListener("gamepaddisconnected", () => { gamepad = null; });
 
 const colors = {
-    1:    { bg: '#000000', txt: '#fff', r: 90 },
-    2:    { bg: '#FFFFFF', txt: '#000', r: 100 }, 
-    4:    { bg: '#FF0000', txt: '#fff', r: 110 }, 
-    8:    { bg: '#00FF00', txt: '#000', r: 120 }, 
-    16:   { bg: '#0000FF', txt: '#fff', r: 130 }, 
-    32:   { bg: '#FFFF00', txt: '#000', r: 140 }, 
-    64:   { bg: '#FF00FF', txt: '#fff', r: 150 }, 
-    128:  { bg: '#00FFFF', txt: '#000', r: 160 }, 
-    256:  { bg: '#FF8000', txt: '#fff', r: 170 }, 
-    512:  { bg: '#8000FF', txt: '#fff', r: 180 }, 
-    1024: { bg: '#00FF80', txt: '#000', r: 190 }, 
-    2048: { bg: '#000000', txt: '#0FF', r: 200 },
-    'X':  { bg: '#fff', txt: '#fff', r: 80 },
-    '🧲':  { bg: '#fff', txt: '#fff', r: 80 }
+    1: { bg: '#000000', txt: '#0FF', r: 100 },
+    2:    { bg: '#FFFFFF', txt: '#000', r: 110 }, 
+    4:    { bg: '#FF0000', txt: '#fff', r: 120 }, 
+    8:    { bg: '#00FF00', txt: '#000', r: 130 }, 
+    16:   { bg: '#0000FF', txt: '#fff', r: 140 }, 
+    32:   { bg: '#FFFF00', txt: '#000', r: 150 }, 
+    64:   { bg: '#FF00FF', txt: '#fff', r: 160 }, 
+    128:  { bg: '#00FFFF', txt: '#000', r: 170 }, 
+    256:  { bg: '#FF8000', txt: '#fff', r: 180 }, 
+    512:  { bg: '#8000FF', txt: '#fff', r: 190 }, 
+    1024: { bg: '#00FF80', txt: '#000', r: 200 }, 
+    2048: { bg: '#000000', txt: '#0FF', r: 250 },
+    'X':  { bg: '#fff', txt: '#fff', r: 80 },
+    '🧲':  { bg: '#fff', txt: '#fff', r: 80 }
 };
 
-
-function drawStaticArena() {
-    // Ajusta o tamanho
-    bgCanvas.width = window.innerWidth;
-    bgCanvas.height = window.innerHeight;
-
-    // Desenha a Arena APENAS AQUI
-    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-    
-    const cx = bgCanvas.width / 2;
-    const cy = bgCanvas.height / 2;
-    const arenaR = Math.min(bgCanvas.width, bgCanvas.height) * 2.0 * zoom;
-
-    bgCtx.strokeStyle = body.classList.contains('theme-body-t4') ? "#ccc" : "#333";
-    bgCtx.lineWidth = 14;
-    bgCtx.lineJoin = "round";
-    
-    bgCtx.beginPath();
-    if (arenaType === 'circle') {
-        bgCtx.arc(cx, cy, arenaR, 0, Math.PI * 2);
-    } else {
-        const drawS = arenaR * 1.05;
-        bgCtx.roundRect(cx - drawS, cy - drawS, drawS * 2, drawS * 2, 150 * zoom);
-    }
-    bgCtx.stroke();
-}
-
 function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    // Atualiza o canvas de fundo também
-    bgCanvas.width = window.innerWidth;
-    bgCanvas.height = window.innerHeight;
-    
-    // Como o tamanho mudou, precisamos redesenhar a arena estática
-    if (typeof drawStaticArena === "function") drawStaticArena();
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 window.addEventListener('resize', resize);
 resize();
 
 function startGame() {
-    const startScreen = document.getElementById('startScreen');
-    startScreen.classList.add('startScreen-hidden');
+    const startScreen = document.getElementById('startScreen');
+    startScreen.classList.add('startScreen-hidden');
+    
+    spheres = [];
+    particles = [];
+    
+    document.getElementById('score').innerText = `☆ Nível: ${score}`;
+    
+    if (!nextSphere) spawn();
 
-    spheres = [];
-    particles = [];
-
-    document.getElementById('score').innerText = `☆ Nível: ${score}`;
-
-    if (!nextSphere) spawn();
-
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
 }
 
 function playMergeSound() {
-    if (!audioCtx) return;
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
-    oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1);
-    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + 0.2);
+    if (!audioCtx) return;
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
+    oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1);
+    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.2);
 }
 
 function playCollisionSound(volume) {
-    if (!audioCtx) return;
+    if (!audioCtx) return;
 
-    const gps = navigator.getGamepads();
-    if (gps[0] && gps[0].vibrationActuator) {
-        gps[0].vibrationActuator.playEffect("dual-rumble", {
-            startDelay: 0,
-            duration: 30,
-            weakMagnitude: Math.min(1.0, volume * 2.5),
-            strongMagnitude: 0
-        }).catch(() => {});
-    }
+    const gps = navigator.getGamepads();
+    if (gps[0] && gps[0].vibrationActuator) {
+        gps[0].vibrationActuator.playEffect("dual-rumble", {
+            startDelay: 0,
+            duration: 30,
+            weakMagnitude: Math.min(1.0, volume * 2.5),
+            strongMagnitude: 0
+        }).catch(() => {});
+    }
 
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(1500, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.04);
-    gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.04);
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(1500, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.04);
+    gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.04);
 }
 
 function playLevelUpSound() {
-    if (!audioCtx) return;
+    if (!audioCtx) return;
 
-    const gps = navigator.getGamepads();
-    if (gps[0] && gps[0].vibrationActuator) {
-        gps[0].vibrationActuator.playEffect("dual-rumble", {
-            duration: 600,
-            weakMagnitude: 0.5,
-            strongMagnitude: 1.0
-        }).catch(() => {});
-    }
+    const gps = navigator.getGamepads();
+    if (gps[0] && gps[0].vibrationActuator) {
+        gps[0].vibrationActuator.playEffect("dual-rumble", {
+            duration: 600,
+            weakMagnitude: 0.5,
+            strongMagnitude: 1.0
+        }).catch(() => {});
+    }
 
-    const notes = [523.25, 659.25, 783.99, 1046.50];
-    notes.forEach((freq, index) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (index * 0.15));
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime + (index * 0.15));
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (index * 0.15) + 0.3);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(audioCtx.currentTime + (index * 0.15));
-        osc.stop(audioCtx.currentTime + (index * 0.15) + 0.3);
-    });
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (index * 0.15));
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime + (index * 0.15));
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (index * 0.15) + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + (index * 0.15));
+        osc.stop(audioCtx.currentTime + (index * 0.15) + 0.3);
+    });
 }
 
 class Particle {
-    constructor(x, y, color) {
-        this.x = x; this.y = y; this.color = color;
-        this.vx = (Math.random() - 0.5) * 8; 
-        this.vy = (Math.random() - 0.5) * 8;
-        this.radius = Math.random() * 2 + 1; 
-        this.alpha = 1;
-        this.decay = Math.random() * 0.02 + 0.015;
-    }
-    update() {
-        this.x += this.vx; this.y += this.vy;
-        this.alpha -= this.decay;
-        this.vx *= 0.95; this.vy *= 0.95;
-    }
-    draw() {
-        ctx.save(); ctx.globalAlpha = this.alpha;
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius * zoom * 2, 0, Math.PI * 2); 
-        ctx.fillStyle = this.color; ctx.fill(); ctx.restore();
-    }
+    constructor(x, y, color) {
+        this.x = x; this.y = y; this.color = color;
+        this.vx = (Math.random() - 0.5) * 8; 
+        this.vy = (Math.random() - 0.5) * 8;
+        this.radius = Math.random() * 2 + 1; 
+        this.alpha = 1;
+        this.decay = Math.random() * 0.02 + 0.015;
+    }
+    update() {
+        this.x += this.vx; this.y += this.vy;
+        this.alpha -= this.decay;
+        this.vx *= 0.95; this.vy *= 0.95;
+    }
+    draw() {
+        ctx.save(); ctx.globalAlpha = this.alpha;
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius * zoom * 2, 0, Math.PI * 2); 
+        ctx.fillStyle = this.color; ctx.fill(); ctx.restore();
+    }
 }
 
 class Sphere {
-    constructor(x, y, val, isStatic = false) {
-        this.x = x; this.y = y; this.val = val;
-        this.radius = colors[val].r;
-        this.vx = 0; this.vy = 0;
-        this.isStatic = isStatic;
-        this.mass = this.radius;
-        this.lifetime = (val === 2048) ? 180 : null;
-    }
+    constructor(x, y, val, isStatic = false) {
+        this.x = x; this.y = y; this.val = val;
+        this.radius = colors[val].r;
+        this.vx = 0; this.vy = 0;
+        this.isStatic = isStatic;
+        this.mass = this.radius;
+        this.lifetime = (val === 2048) ? 180 : null;
+    }
+    update() {
+        if (this.isStatic) return;
+        this.x += this.vx; this.y += this.vy;
+        this.vx *= 0.995; this.vy *= 0.995;
+        const cx = canvas.width / 2; const cy = canvas.height / 2;
+        const arenaR = Math.min(canvas.width, canvas.height) * 2.0 * zoom;
+        const dx = this.x - cx; const dy = this.y - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist + this.radius * zoom > arenaR) {
+            const nx = dx / dist; const ny = dy / dist;
+            const dot = this.vx * nx + this.vy * ny;
+            this.vx -= 2 * dot * nx; this.vy -= 2 * dot * ny;
+            const overlap = dist + this.radius * zoom - arenaR;
+            this.x -= nx * overlap; this.y -= ny * overlap;
+        }
+    }
+    draw() {
+        ctx.save();
 
-    update() {
-        if (this.isStatic) return;
-        this.x += this.vx;
-        this.y += this.vy;
-        this.vx *= 0.995;
-        this.vy *= 0.995;
-
-        const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
-        const arenaR = Math.min(canvas.width, canvas.height) * 2.0 * zoom;
-
-        if (arenaType === 'circle') {
-            const dx = this.x - cx;
-            const dy = this.y - cy;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist + this.radius * zoom > arenaR) {
-                const nx = dx / dist; const ny = dy / dist;
-                const dot = this.vx * nx + this.vy * ny;
-                this.vx -= 2 * dot * nx; this.vy -= 2 * dot * ny;
-                const overlap = dist + this.radius * zoom - arenaR;
-                this.x -= nx * overlap; this.y -= ny * overlap;
-            }
-        } 
-        else if (arenaType === 'square') {
-            const s = arenaR;
-            if (this.x - this.radius * zoom < cx - s) { this.vx *= -1; this.x = cx - s + this.radius * zoom; }
-            if (this.x + this.radius * zoom > cx + s) { this.vx *= -1; this.x = cx + s - this.radius * zoom; }
-            if (this.y - this.radius * zoom < cy - s) { this.vy *= -1; this.y = cy - s + this.radius * zoom; }
-            if (this.y + this.radius * zoom > cy + s) { this.vy *= -1; this.y = cy + s - this.radius * zoom; }
-        } 
-    } 
-
-    draw() {
-        ctx.save();
-        let bg = (currentTheme && typeof this.val === 'number') ? currentTheme[Math.log2(this.val) % currentTheme.length] : colors[this.val].bg;
-        let txtCol = colors[this.val].txt;
-
-        if (this.val === 'X' || this.val === '🧲') {
-            const hue = (Date.now() / 10) % 360;
-            bg = `hsl(${hue}, 100%, 50%)`; ctx.shadowBlur = 20; ctx.shadowColor = bg;
-        } else { 
-            ctx.shadowBlur = 5; 
-            ctx.shadowColor = (body.classList.contains('theme-body-t4')) ? "rgba(0,0,0,0.1)" : "#ffffff"; 
-        }
-
-        ctx.beginPath(); 
-        ctx.arc(this.x, this.y, this.radius * zoom, 0, Math.PI * 2);
-        ctx.fillStyle = bg; 
-        ctx.fill(); 
-        ctx.strokeStyle = (body.classList.contains('theme-body-t4')) ? "rgba(0,0,0,0.1)" : "#ffffff"; 
-        ctx.lineWidth = 2; 
-        ctx.stroke();
-        ctx.restore();
-
-        ctx.fillStyle = (body.classList.contains('theme-body-t4')) ? "#004d40" : txtCol; 
-        ctx.font = `bold ${this.radius * 1.0 * zoom}px Arial`;
-        ctx.textAlign = "center"; 
-        ctx.textBaseline = "middle"; 
-        ctx.fillText(this.val, this.x, this.y);
-    }
+        let bg = (currentTheme && typeof this.val === 'number') ? currentTheme[Math.log2(this.val) % currentTheme.length] : colors[this.val].bg;
+        let txtCol = colors[this.val].txt;
+        
+        if (this.val === 'X' || this.val === '🧲') {
+            const hue = (Date.now() / 10) % 360;
+            bg = `hsl(${hue}, 100%, 50%)`; ctx.shadowBlur = 20; ctx.shadowColor = bg;
+        } else { 
+            ctx.shadowBlur = 5; 
+            ctx.shadowColor = (body.classList.contains('theme-body-t4')) ? "rgba(0,0,0,0.1)" : "#ffffff"; 
+        }
+        
+        ctx.beginPath(); 
+        ctx.arc(this.x, this.y, this.radius * zoom, 0, Math.PI * 2);
+        ctx.fillStyle = bg; 
+        ctx.fill(); 
+        ctx.strokeStyle = (body.classList.contains('theme-body-t4')) ? "rgba(0,0,0,0.1)" : "#ffffff"; 
+        ctx.lineWidth = 2; 
+        ctx.stroke();
+        ctx.restore();
+        
+        ctx.fillStyle = (body.classList.contains('theme-body-t4')) ? "#004d40" : txtCol; 
+        ctx.font = `bold ${this.radius * 1.0 * zoom}px Arial`;
+        ctx.textAlign = "center"; 
+        ctx.textBaseline = "middle"; 
+        ctx.fillText(this.val, this.x, this.y);
+    }
 }
 
 function createMergeParticles(x, y, count = 15) {
-    for (let i = 0; i < count; i++) { particles.push(new Particle(x, y, "#ffffff")); }
+    for (let i = 0; i < count; i++) { particles.push(new Particle(x, y, "#ffffff")); }
 }
 
 function spawn() {
-    const r = Math.random();
-    let val;
-    if (r < 0.03) val = '🧲';
-    else if (r < 0.08) val = 'X';
-    else if (r > 0.60) val = 1;
-    else if (r > 0.45) val = 2;
-    else if (r > 0.20) val = 4;
-    else val = 8;
-    nextSphere = new Sphere(canvas.width / 2, canvas.height / 2, val, true);
+    const r = Math.random();
+    let val;
+    if (r < 0.03) val = '🧲';
+    else if (r < 0.08) val = 'X';
+    else if (r > 0.45) val = 2;
+    else if (r > 0.20) val = 4;
+    else val = 8;
+    nextSphere = new Sphere(canvas.width / 2, canvas.height / 2, val, true);
 }
 
 function launch() {
-    if (!nextSphere) return;
-    const dx = mouse.x - canvas.width / 2; const dy = mouse.y - canvas.height / 2;
-    const angle = Math.atan2(dy, dx); const speed = 15;
-    nextSphere.isStatic = false; nextSphere.vx = Math.cos(angle) * speed; nextSphere.vy = Math.sin(angle) * speed;
-    spheres.push(nextSphere); nextSphere = null;
-    setTimeout(spawn, 800);
+    if (!nextSphere) return;
+    const dx = mouse.x - canvas.width / 2; const dy = mouse.y - canvas.height / 2;
+    const angle = Math.atan2(dy, dx); const speed = 15;
+    nextSphere.isStatic = false; nextSphere.vx = Math.cos(angle) * speed; nextSphere.vy = Math.sin(angle) * speed;
+    spheres.push(nextSphere); nextSphere = null;
+    setTimeout(spawn, 800);
 }
 
 function resolveCollision(s1, s2) {
-    const dx = s2.x - s1.x; const dy = s2.y - s1.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
+    const dx = s2.x - s1.x; const dy = s2.y - s1.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    if (dist < (s1.radius + s2.radius) * zoom) {
 
-    if (dist < (s1.radius + s2.radius) * zoom) {
+        if (s1.val === '🧲' || s2.val === '🧲') {
+            const powerSphere = s1.val === '🧲' ? s1 : s2;
+            const targetSphere = s1.val === '🧲' ? s2 : s1;
+            if (typeof targetSphere.val === 'number') {
+                const targetValue = targetSphere.val;
+                spheres.forEach(s => { if (s.val === targetValue) { const angle = Math.atan2(targetSphere.y - s.y, targetSphere.x - s.x); s.vx = Math.cos(angle) * 25; s.vy = Math.sin(angle) * 25; } });
+                createMergeParticles(powerSphere.x, powerSphere.y, 40);
+                spheres = spheres.filter(s => s !== powerSphere); return; 
+            }
+        }
+        
+        if (s1.val === s2.val || s1.val === 'X' || s2.val === 'X') {
+            let newVal;
+            if (s1.val === 'X' && s2.val === 'X') newVal = 4;
+            else if (s1.val === 'X') newVal = s2.val * 2;
+            else if (s2.val === 'X') newVal = s1.val * 2;
+            else newVal = s1.val * 2;
+            
+            playMergeSound();
+            const mergeX = (s1.x + s2.x) / 2; const mergeY = (s1.y + s2.y) / 2;
+            const shockRadius = 500 * zoom; const shockStrength = 12 + (Math.log2(newVal) * 2);
+            spheres.forEach(other => { if (other !== s1 && other !== s2) { const pdx = other.x - mergeX; const pdy = other.y - mergeY; const pDist = Math.sqrt(pdx * pdx + pdy * pdy); if (pDist < shockRadius) { const angle = Math.atan2(pdy, pdx); const forceMult = (1 - pDist / shockRadius) * shockStrength; other.vx += Math.cos(angle) * forceMult; other.vy += Math.sin(angle) * forceMult; } } });
+            createMergeParticles(mergeX, mergeY, 25); 
+            
+            if (newVal >= 2048) {
+                const finalSphere = new Sphere(mergeX, mergeY, 2048);
+                finalSphere.vx = (s1.vx + s2.vx) * 0.5; finalSphere.vy = (s1.vy + s2.vy) * 0.5;
+                spheres.push(finalSphere); score += 1;
+                localStorage.setItem('zeroG_score', score); document.getElementById('score').innerText = `☆ Nível: ${score}`;
+                playLevelUpSound();
+            } else if (colors[newVal]) {
+                const merged = new Sphere(mergeX, mergeY, newVal);
+                merged.vx = (s1.vx + s2.vx) * 0.5; merged.vy = (s1.vy + s2.vy) * 0.5;
+                spheres.push(merged);
+            }
+            spheres = spheres.filter(s => s !== s1 && s !== s2); return;
+        }
 
-        if (s1.val === '🧲' || s2.val === '🧲') {
-            const powerSphere = s1.val === '🧲' ? s1 : s2;
-            const targetSphere = s1.val === '🧲' ? s2 : s1;
-            if (typeof targetSphere.val === 'number') {
-                const targetValue = targetSphere.val;
-                spheres.forEach(s => { if (s.val === targetValue) { const angle = Math.atan2(targetSphere.y - s.y, targetSphere.x - s.x); s.vx = Math.cos(angle) * 25; s.vy = Math.sin(angle) * 25; } });
-                createMergeParticles(powerSphere.x, powerSphere.y, 40);
-                spheres = spheres.filter(s => s !== powerSphere); return; 
-            }
-        }
+        const nx = dx / dist; const ny = dy / dist;
+        const p = 2 * (s1.vx * nx + s1.vy * ny - s2.vx * nx - s2.vy * ny) / (s1.mass + s2.mass);
+        
+        let impactForce = Math.abs(p);
+        if (impactForce > 0.15) {
+            playCollisionSound(Math.min(0.5, impactForce * 0.2)); 
+        }
 
-        if (s1.val === s2.val || s1.val === 'X' || s2.val === 'X') {
-            let newVal;
-            if (s1.val === 'X' && s2.val === 'X') newVal = 4;
-            else if (s1.val === 'X') newVal = s2.val * 2;
-            else if (s2.val === 'X') newVal = s1.val * 2;
-            else newVal = s1.val * 2;
+        s1.vx -= p * s2.mass * nx; s1.vy -= p * s2.mass * ny;
+        s2.vx += p * s1.mass * nx; s2.vy += p * s1.mass * ny;
 
-            playMergeSound();
-            const mergeX = (s1.x + s2.x) / 2; const mergeY = (s1.y + s2.y) / 2;
-            const shockRadius = 500 * zoom; const shockStrength = 12 + (Math.log2(newVal) * 2);
-            spheres.forEach(other => { if (other !== s1 && other !== s2) { const pdx = other.x - mergeX; const pdy = other.y - mergeY; const pDist = Math.sqrt(pdx * pdx + pdy * pdy); if (pDist < shockRadius) { const angle = Math.atan2(pdy, pdx); const forceMult = (1 - pDist / shockRadius) * shockStrength; other.vx += Math.cos(angle) * forceMult; other.vy += Math.sin(angle) * forceMult; } } });
-            createMergeParticles(mergeX, mergeY, 25); 
-
-            if (newVal >= 2048) {
-                const finalSphere = new Sphere(mergeX, mergeY, 2048);
-                finalSphere.vx = (s1.vx + s2.vx) * 0.5; finalSphere.vy = (s1.vy + s2.vy) * 0.5;
-                spheres.push(finalSphere); score += 1;
-                localStorage.setItem('zeroG_score', score); document.getElementById('score').innerText = `☆ Nível: ${score}`;
-                playLevelUpSound();
-            } else if (colors[newVal]) {
-                const merged = new Sphere(mergeX, mergeY, newVal);
-                merged.vx = (s1.vx + s2.vx) * 0.5; merged.vy = (s1.vy + s2.vy) * 0.5;
-                spheres.push(merged);
-            }
-            spheres = spheres.filter(s => s !== s1 && s !== s2); return;
-        }
-
-        const nx = dx / dist; const ny = dy / dist;
-        const p = 2 * (s1.vx * nx + s1.vy * ny - s2.vx * nx - s2.vy * ny) / (s1.mass + s2.mass);
-
-        let impactForce = Math.abs(p);
-        if (impactForce > 0.15) {
-            playCollisionSound(Math.min(0.5, impactForce * 0.2)); 
-        }
-
-        s1.vx -= p * s2.mass * nx; s1.vy -= p * s2.mass * ny;
-        s2.vx += p * s1.mass * nx; s2.vy += p * s1.mass * ny;
-
-        const overlap = (s1.radius + s2.radius) * zoom - dist;
-        s1.x -= nx * overlap / 2; s1.y -= ny * overlap / 2;
-        s2.x += nx * overlap / 2; s2.y += ny * overlap / 2;
-    }
+        const overlap = (s1.radius + s2.radius) * zoom - dist;
+        s1.x -= nx * overlap / 2; s1.y -= ny * overlap / 2;
+        s2.x += nx * overlap / 2; s2.y += ny * overlap / 2;
+    }
 }
 
 function applyMagneticRepulsion() {
-    const strength = 0.15;
-    for (let i = 0; i < spheres.length; i++) {
-        for (let j = i + 1; j < spheres.length; j++) {
-            const s1 = spheres[i]; const s2 = spheres[j];
-            const dx = s2.x - s1.x; const dy = s2.y - s1.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            const dynamicRepulsionRadius = (s1.radius + s2.radius + 40) * zoom;
-            if (dist < dynamicRepulsionRadius && dist > 0) {
-                const angle = Math.atan2(dy, dx); const force = (1 - dist / dynamicRepulsionRadius) * strength;
-                s2.vx += Math.cos(angle) * force; s2.vy += Math.sin(angle) * force;
-                s1.vx -= Math.cos(angle) * force; s1.vy -= Math.sin(angle) * force;
-            }
-        }
-    }
+    const strength = 0.15;
+    for (let i = 0; i < spheres.length; i++) {
+        for (let j = i + 1; j < spheres.length; j++) {
+            const s1 = spheres[i]; const s2 = spheres[j];
+            const dx = s2.x - s1.x; const dy = s2.y - s1.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const dynamicRepulsionRadius = (s1.radius + s2.radius + 40) * zoom;
+            if (dist < dynamicRepulsionRadius && dist > 0) {
+                const angle = Math.atan2(dy, dx); const force = (1 - dist / dynamicRepulsionRadius) * strength;
+                s2.vx += Math.cos(angle) * force; s2.vy += Math.sin(angle) * force;
+                s1.vx -= Math.cos(angle) * force; s1.vy -= Math.sin(angle) * force;
+            }
+        }
+    }
 }
 
 let autoMode = false; let autoInterval = null;
 function toggleAuto() {
-    autoMode = !autoMode; const btn = document.getElementById('autoBtn');
-    if (autoMode) { btn.innerText = "AUTO: ON"; btn.style.color = "#00ff00"; autoInterval = setInterval(autoLaunch, 3000); }
-    else { btn.innerText = "AUTO: OFF"; btn.style.color = "#ff4444"; clearInterval(autoInterval); }
+    autoMode = !autoMode; const btn = document.getElementById('autoBtn');
+    if (autoMode) { btn.innerText = "AUTO: ON"; btn.style.color = "#00ff00"; autoInterval = setInterval(autoLaunch, 3000); }
+    else { btn.innerText = "AUTO: OFF"; btn.style.color = "#ff4444"; clearInterval(autoInterval); }
 }
 
 function autoLaunch() {
-    if (!nextSphere) return;
-    let target = null; let cx = canvas.width / 2; let cy = canvas.height / 2;
-    if (nextSphere.val === 'X') { let maxVal = -1; spheres.forEach(s => { if (typeof s.val === 'number' && s.val > maxVal) { maxVal = s.val; target = s; } }); }
-    else if (nextSphere.val === '🧲') { let counts = {}; spheres.forEach(s => { if(typeof s.val === 'number') counts[s.val] = (counts[s.val] || 0) + 1; }); let bestVal = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b, null); target = spheres.find(s => s.val == bestVal); }
-    else { let minDist = Infinity; spheres.forEach(s => { if (s.val === nextSphere.val) { const d = Math.sqrt((s.x - cx)**2 + (s.y - cy)**2); if (d < minDist) { minDist = d; target = s; } } }); if (!target && spheres.length > 0) { let minVal = Infinity; spheres.forEach(s => { if (s.val < minVal) { minVal = s.val; target = s; } }); } }
-    if (target) { mouse.x = target.x; mouse.y = target.y; launch(); }
+    if (!nextSphere) return;
+    let target = null; let cx = canvas.width / 2; let cy = canvas.height / 2;
+    if (nextSphere.val === 'X') { let maxVal = -1; spheres.forEach(s => { if (typeof s.val === 'number' && s.val > maxVal) { maxVal = s.val; target = s; } }); }
+    else if (nextSphere.val === '🧲') { let counts = {}; spheres.forEach(s => { if(typeof s.val === 'number') counts[s.val] = (counts[s.val] || 0) + 1; }); let bestVal = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b, null); target = spheres.find(s => s.val == bestVal); }
+    else { let minDist = Infinity; spheres.forEach(s => { if (s.val === nextSphere.val) { const d = Math.sqrt((s.x - cx)**2 + (s.y - cy)**2); if (d < minDist) { minDist = d; target = s; } } }); if (!target && spheres.length > 0) { let minVal = Infinity; spheres.forEach(s => { if (s.val < minVal) { minVal = s.val; target = s; } }); } }
+    if (target) { mouse.x = target.x; mouse.y = target.y; launch(); }
 }
 
-function changeZoom(v) { 
-    zoom *= v; 
-    drawStaticArena(); // Adicione isso aqui!
-}
+function changeZoom(v) { zoom *= v; }
 const getPos = (e) => { const t = e.touches ? e.touches[0] : e; mouse.x = t.clientX; mouse.y = t.clientY; };
 window.addEventListener('mousedown', (e) => { isAiming = true; getPos(e); });
 window.addEventListener('mousemove', getPos);
@@ -604,159 +565,174 @@ window.addEventListener('touchmove', getPos);
 window.addEventListener('touchend', () => { if(isAiming) { isAiming = false; launch(); } });
 
 function updateGamepad() {
-    const gps = navigator.getGamepads();
-    const gp = gps[0];
-    if (!gp) return;
+    const gps = navigator.getGamepads();
+    const gp = gps[0];
+    if (!gp) return;
 
-    const sensibilidade = 0.6; 
+    const sensibilidade = 0.6; 
 
-    let stickX = gp.axes[0];
-    let stickY = gp.axes[1];
+    let stickX = gp.axes[0];
+    let stickY = gp.axes[1];
 
-    if (Math.abs(stickX) > 0.15 || Math.abs(stickY) > 0.15) {
-        isAiming = true;
+    if (Math.abs(stickX) > 0.15 || Math.abs(stickY) > 0.15) {
+        isAiming = true;
+        
+        const alcanceMaximo = 400 * sensibilidade;
+        mouse.x = (canvas.width / 2) + (stickX * alcanceMaximo);
+        mouse.y = (canvas.height / 2) + (stickY * alcanceMaximo);
+    }
 
-        const alcanceMaximo = 400 * sensibilidade;
-        mouse.x = (canvas.width / 2) + (stickX * alcanceMaximo);
-        mouse.y = (canvas.height / 2) + (stickY * alcanceMaximo);
-    }
+    const btnPressed = gp.buttons[0].pressed;
+    if (btnPressed) {
+        if (isAiming && !gp.lastState) {
+            launch();
+            isAiming = false;
+        }
+    }
+    gp.lastState = btnPressed; 
 
-    const btnPressed = gp.buttons[0].pressed;
-    if (btnPressed) {
-        if (isAiming && !gp.lastState) {
-            launch();
-            isAiming = false;
-        }
-    }
-    gp.lastState = btnPressed; 
+    if (gp.buttons[5].pressed) changeZoom(1.01);
+    if (gp.buttons[4].pressed) changeZoom(0.99);
 
-    if (gp.buttons[5].pressed) changeZoom(1.01);
-    if (gp.buttons[4].pressed) changeZoom(0.99);
-
-    if (gp.buttons[8].pressed && !gp.resetState) {
-        resetGame();
-    }
-    gp.resetState = gp.buttons[8].pressed; 
+    if (gp.buttons[8].pressed && !gp.resetState) {
+        resetGame();
+    }
+    gp.resetState = gp.buttons[8].pressed; 
 }
 
 function toggleGuide(show) {
-    const guide = document.getElementById('infoGuide');
-    guide.style.display = show ? 'block' : 'none';
+    const guide = document.getElementById('infoGuide');
+    guide.style.display = show ? 'block' : 'none';
 }
 
 const originalStartGame = startGame;
 startGame = function() {
-    toggleGuide(false); 
-    originalStartGame();
+    toggleGuide(false); 
+    originalStartGame();
 }
 
 function backToMenu() {
-    const startScreen = document.getElementById('startScreen');
-    startScreen.classList.remove('startScreen-hidden');
-    
-    // Atualiza o recorde visual no menu antes de mostrar
-    document.getElementById('menuRecord').innerText = `MEU RECORDE: ☆ ${score}`;
 
-    spheres = [];
-    particles = [];
-    spawn();
+    const startScreen = document.getElementById('startScreen');
+    startScreen.classList.remove('startScreen-hidden');
+    
+    spheres = [];
+    particles = [];
+    spawn();
 }
 
 function animate() {
-    updateGamepad();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = gameBackgroundColor; 
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    updateGamepad();
+    ctx.fillStyle = gameBackgroundColor; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    const cx = canvas.width / 2; 
+    const cy = canvas.height / 2;
+    const arenaR = Math.min(canvas.width, canvas.height) * 2.0 * zoom;
+    
+    applyMagneticRepulsion();
+    
+    ctx.beginPath(); 
+    ctx.arc(cx, cy, arenaR, 0, Math.PI * 2); 
 
-    const cx = canvas.width / 2; 
-    const cy = canvas.height / 2;
-    const arenaR = Math.min(canvas.width, canvas.height) * 2.0 * zoom;
+    ctx.strokeStyle = (body.classList.contains('theme-body-t4') || body.classList.contains('theme-body-candy')) ? "#ccc" : "#333"; 
+    ctx.lineWidth = 5; 
+    ctx.stroke();
 
-    applyMagneticRepulsion();
+    if (isAiming && nextSphere) { 
+        ctx.beginPath(); 
+        ctx.setLineDash([5, 10]); 
+        ctx.moveTo(cx, cy); 
+        ctx.lineTo(mouse.x, mouse.y); 
+        ctx.strokeStyle = (body.classList.contains('theme-body-t4') || body.classList.contains('theme-body-candy')) ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.3)"; 
+        ctx.stroke(); 
+        ctx.setLineDash([]); 
+    }
 
-
-    if (isAiming && nextSphere) { 
-        ctx.beginPath(); 
-        ctx.setLineDash([5, 10]); 
-        ctx.moveTo(cx, cy); 
-        ctx.lineTo(mouse.x, mouse.y); 
-        ctx.strokeStyle = (body.classList.contains('theme-body-t4') || body.classList.contains('theme-body-candy')) ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.3)"; 
-        ctx.stroke(); 
-        ctx.setLineDash([]); 
-    }
-
-    if (nextSphere) nextSphere.draw();
-
-    for (let i = particles.length - 1; i >= 0; i--) { 
-        particles[i].update(); 
-        particles[i].draw(); 
-        if (particles[i].alpha <= 0) particles.splice(i, 1); 
-    }
-
-    for (let i = spheres.length - 1; i >= 0; i--) {
-        const s = spheres[i]; 
-        s.update();
-        if (s.lifetime !== null) { 
-            s.lifetime--; 
-            if (s.lifetime < 60) ctx.globalAlpha = Math.random() > 0.5 ? 1 : 0.5; 
-            if (s.lifetime <= 0) { createMergeParticles(s.x, s.y, 50); spheres.splice(i, 1); ctx.globalAlpha = 1; continue; } 
-        }
-        for (let j = i + 1; j < spheres.length; j++) { resolveCollision(s, spheres[j]); }
-        s.draw(); 
-        ctx.globalAlpha = 1;
-    }
-    requestAnimationFrame(animate);
+    if (nextSphere) nextSphere.draw();
+    
+    for (let i = particles.length - 1; i >= 0; i--) { 
+        particles[i].update(); 
+        particles[i].draw(); 
+        if (particles[i].alpha <= 0) particles.splice(i, 1); 
+    }
+    
+    for (let i = spheres.length - 1; i >= 0; i--) {
+        const s = spheres[i]; 
+        s.update();
+        if (s.lifetime !== null) { 
+            s.lifetime--; 
+            if (s.lifetime < 60) ctx.globalAlpha = Math.random() > 0.5 ? 1 : 0.5; 
+            if (s.lifetime <= 0) { createMergeParticles(s.x, s.y, 50); spheres.splice(i, 1); ctx.globalAlpha = 1; continue; } 
+        }
+        for (let j = i + 1; j < spheres.length; j++) { resolveCollision(s, spheres[j]); }
+        s.draw(); 
+        ctx.globalAlpha = 1;
+    }
+    requestAnimationFrame(animate);
 }
 
 function resetGame() { if (confirm("Deseja zerar seu nível e recomeçar?")) { localStorage.removeItem('zeroG_score'); location.reload(); } }
 
 function exitGame() {
-    if (confirm("Deseja fechar o jogo?")) {
-        window.close();
+    if (confirm("Deseja fechar o jogo?")) {
+        window.close();
 
-        alert("Para sair, feche a aba do seu navegador.");
-    }
+        alert("Para sair, feche a aba do seu navegador.");
+    }
 }
 
 function toggleSupport(show) {
-    const modal = document.getElementById('supportModal');
-    modal.style.display = show ? 'block' : 'none';
+    const modal = document.getElementById('supportModal');
+    modal.style.display = show ? 'block' : 'none';
 }
 
+function copyPix() {
+    const pixText = document.getElementById('pixKey').innerText;
+    navigator.clipboard.writeText(pixText).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.innerText = "COPIADO!";
+        btn.style.background = "#00ffcc";
+        
+        setTimeout(() => {
+            btn.innerText = "COPIAR CHAVE PIX";
+            btn.style.background = "#ffd700";
+        }, 2000);
+    }).catch(err => {
+        alert("Erro ao copiar. Por favor, copie manualmente: " + pixText);
+    });
+}
 
 function setTheme(theme) {
-    const cv = document.getElementById('gameCanvas'); 
-    const scoreDisp = document.getElementById('score');
-    const uiElements = document.querySelectorAll('.elem');
+    const cv = document.getElementById('gameCanvas'); 
+    const scoreDisp = document.getElementById('score');
 
-    cv.classList.remove('filter-invert', 'filter-heat', 'filter-cold', 'filter-candy'); 
-    body.classList.remove('theme-body-candy', 'theme-body-t4');
+    cv.classList.remove('filter-invert', 'filter-heat', 'filter-cold', 'filter-candy'); 
+    body.classList.remove('theme-body-candy', 'theme-body-t4');
+    
+    gameBackgroundColor = "rgba(10, 10, 12, 0.2)"; 
+    cv.style.background = "black"; 
+    scoreDisp.style.color = "white"; 
+    currentTheme = null;
 
-    // Reset padrão
-    gameBackgroundColor = "rgba(10, 10, 12, 0.2)"; 
-    cv.style.background = "black"; 
-    scoreDisp.style.color = "white"; 
-    currentTheme = null;
+    if (theme === 'invert') cv.classList.add('filter-invert');
+    if (theme === 'heat') cv.classList.add('filter-heat');
 
-    if (theme === 'invert') cv.classList.add('filter-invert');
-    if (theme === 'heat') cv.classList.add('filter-heat');
+    if (theme === 'T4') {
+        body.classList.add('theme-body-t4');
+        cv.style.background = '#e0f7fa'; 
+        scoreDisp.style.color = '#006064';
+        gameBackgroundColor = "rgba(224, 247, 250, 0.2)"; 
+        currentTheme = ['#00d4ff', '#00ffcc', '#0099ff', '#3366ff', '#66ffff']; 
+    }
 
-    if (theme === 'T4') {
-        body.classList.add('theme-body-t4');
-        cv.style.background = '#e0f7fa'; 
-        scoreDisp.style.color = '#006064';
-        gameBackgroundColor = "rgba(224, 247, 250, 0.4)"; // Um pouco mais opaco para limpar melhor o rastro
-        currentTheme = ['#00d4ff', '#00ffcc', '#0099ff', '#3366ff', '#66ffff']; 
-    }
-
-    if (theme === 'candy') { 
-        cv.classList.add('filter-candy'); 
-        body.classList.add('theme-body-candy'); 
-        cv.style.background = "blanchedalmond";
-        scoreDisp.style.color = "#5d4037";
-        gameBackgroundColor = "rgba(255, 235, 205, 0.4)"; 
-    }
-    drawStaticArena();
+    if (theme === 'candy') { 
+        cv.classList.add('filter-candy'); 
+        body.classList.add('theme-body-candy'); 
+        cv.style.background = "blanchedalmond";
+        scoreDisp.style.color = "#5d4037";
+        gameBackgroundColor = "rgba(255, 235, 205, 0.2)"; 
+    }
 }
 
 document.getElementById('score').innerText = `☆ Nível: ${score}`;
@@ -765,15 +741,6 @@ spawn();
 document.getElementById('menuRecord').innerText = `MEU RECORDE: ☆ ${score}`;
 
 animate();
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
-  }
-  const link = document.createElement('link');
-  link.rel = 'manifest';
-  link.href = 'manifest.json';
-  document.head.appendChild(link);
-
 </script>
 </body>
 </html>
