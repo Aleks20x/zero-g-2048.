@@ -1,9 +1,0 @@
-{
-  "name": "Zero-G 2048 Ultra",
-  "short_name": "Zero-G",
-  "start_url": "index.html",
-  "display": "standalone",
-  "background_color": "#0a0a0c",
-  "theme_color": "#ffd700",
-  "orientation": "portrait"
-}
